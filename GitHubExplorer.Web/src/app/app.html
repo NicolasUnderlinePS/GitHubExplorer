@@ -1,0 +1,87 @@
+<main class="main">
+  <div class="content">
+    <div class="search-controls" style="width: 1000px;">
+
+      <div class="row">
+        <label for="projectInput">Projeto:</label>
+        <input type="text" id="projectInput" [(ngModel)]="projectQuery" placeholder="Nome do projeto">
+      </div>
+
+      <div class="row">
+        <label for="ownerInput">Dono:</label>
+        <input type="text" id="ownerInput" [(ngModel)]="ownerQuery" placeholder="Nome do dono">
+      </div>
+
+
+      <div class="row">
+        <label for="starsLevel">Peso de relevância por Estrelas:</label>
+        <select id="starsLevel" [(ngModel)]="starsRelevantLevel">
+          <option *ngFor="let option of relevantOptions" [value]="option.value">{{ option.label }}</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label for="forksLevel">Peso de relevância por Forks:</label>
+        <select id="forksLevel" [(ngModel)]="forksRelevantLevel">
+          <option *ngFor="let option of relevantOptions" [value]="option.value">{{ option.label }}</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label for="watchersLevel">Peso de relevância por Visualizações:</label>
+        <select id="watchersLevel" [(ngModel)]="watchersRelevantLevel">
+          <option *ngFor="let option of relevantOptions" [value]="option.value">{{ option.label }}</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <button (click)="search()">Pesquisar</button>
+      </div>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
+    <div *ngIf="repositories.length > 0" class="results-table-container" style="width: 1000px;">
+      <h3>Resultados da Busca</h3>
+      <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Nome Projeto</th>
+              <th>Dono</th>
+              <th>Data de Criação</th>
+              <th>Estrelas</th>
+              <th>Forks</th>
+              <th>Visualizações</th>
+              <th>Favoritar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let repo of repositories" [ngClass]="{ 'favorited-cell': repo.isFavoriteGitHubProject }">
+              <td>{{ repo.nameProject }}</td>
+              <td>{{ repo.ownerName }}</td>
+              <td>{{ repo.createdAt }}</td>
+              <td>{{ repo.starsCount }}</td>
+              <td>{{ repo.forksCount }}</td>
+              <td>{{ repo.watchersCount }}</td>
+              <td>
+                <button (click)="favorite(repo.gitHubProjectId)">
+                  {{ repo.isFavoriteGitHubProject ? 'Remover' : 'Favoritar' }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div *ngIf="repositories.length === 0 && !errorMessage" class="no-results-message">
+      <p>Faça uma pesquisa!</p>
+    </div>
+
+  </div>
+</main>
+
+<router-outlet />
